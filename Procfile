@@ -1,1 +1,1 @@
-web: gunicorn exam_exam.wsgi --log-file -
+web: gunicorn lab_exam.wsgi --log-file -
