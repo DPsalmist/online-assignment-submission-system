@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'kgq0$&^r81ozku4cv9fn@^)yb826##_sia&h5kwg)t0p%u#1#o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ 'naza-oass.herokuapp.com' ]
 
 
 # Application definition
