@@ -16,7 +16,3 @@ psycopg2-binary==2.8.4
 social-auth-app-django==4.0.0
 social-auth-core==4.1.0
 whitenoise==5.2.0
-<<<<<<< HEAD
-=======
-
->>>>>>> ea1e797856903c26c62c2629f45fcd70b970f987
