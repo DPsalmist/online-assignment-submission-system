@@ -124,7 +124,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-<<<<<<< HEAD
+# <<<<<<< HEAD
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # STATIC_URL = '/static/'
 
@@ -134,31 +134,31 @@ USE_TZ = True
 
 # Configure Django App for Heroku.
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-=======
+# =======
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 STATICFILES_DIR = ( 
     os.path.join(BASE_DIR, 'static')
 )
->>>>>>> ea1e797856903c26c62c2629f45fcd70b970f987
+# >>>>>>> ea1e797856903c26c62c2629f45fcd70b970f987
 
 
 # Configure Django App for Heroku.
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-<<<<<<< HEAD
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+# <<<<<<< HEAD
+# STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, 'static'),
+# )
 
 
-=======
->>>>>>> ea1e797856903c26c62c2629f45fcd70b970f987
+# =====
+# >>>>>>> ea1e797856903c26c62c2629f45fcd70b970f987
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
