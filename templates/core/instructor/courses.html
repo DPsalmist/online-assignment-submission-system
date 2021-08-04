@@ -15,7 +15,7 @@
           <div class="section-heading text-center">
 
 
-            <h3>{{ request.user.first_name }}'s Course/s</h3>
+            <h3>All Course(s)</h3>
             <div class="line"></div>
           </div>
         </div>
@@ -36,7 +36,7 @@
               </div>
               <!-- Dentist Info -->
               <div class="dentist-info bg-gradient-overlay">
-                  <h5>{{ course.course_name }} |  <a href="{% url 'core:course-view' course.id %}"> <small>VIEW COURSE</small></a> </h5>
+                  <h5>{{ course.course_name }} |  <a href="{% url 'core:course-view' course.course_code %}"> <small>VIEW COURSE</small></a> </h5>
                 <p>{{ course.teacher_name }} </p>
 
 

@@ -84,6 +84,7 @@
                                             <li><a href="{% url 'authentication:instructor-profile-update' %}"> Edit Profile</a></li>
                                             <li><a href="{% url 'core:course' %}">Courses</a></li>
                                             <li><a href="{% url 'core:course-create' %}"> Create Course</a></li>
+                                            <li><a href="{% url 'core:assignment-create' %}"> Create Assignment</a></li>
                                             <li><a href="{% url 'core:exam-submission-list' %}"> Exam Submissions</a></li>
                                             <li><a href="{% url 'core:assignment-submission-list' %}"> Assignment Submissions</a></li>
                                             <li><a href="{% url 'authentication:logout' %}"> Logout</a></li>
@@ -94,11 +95,16 @@
 
                              {% elif request.user.is_authenticated and request.user.role == 'student' %}
                                      <li><a href="{% url 'core:course' %}">Courses</a></li>
+                                     <li>
+                                        <a class="glyphicon glyphicon-envelope" href="{% url 'core:assignment-list' %}">
+                                            {{ assignment_notification }}
+                                        </a>
+                                    </li>
 
                                     <li>
                                         <a href="">
                                             <span class="glyphicon glyphicon-user">
-                                                    {{ request.user.first_name }}
+                                                 {{ request.user.first_name }}
                                             </span>
                                         </a>
                                         <ul class="dropdown">

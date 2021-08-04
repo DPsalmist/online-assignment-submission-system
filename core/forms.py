@@ -6,13 +6,15 @@ from .models import Course, Assignment, Exam, AssignmentSubmission, ExamSubmissi
 class CourseCreateForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ['course_name', 'course_image', 'teacher_name', 'teacher_details', 'course_description', 'end_date']
+        fields = ['course_name', 'course_image', 'teacher_name', 'course_code',
+        'teacher_details', 'course_description', 'end_date']
 
     def __init__(self, *args, **kwargs):
         super(CourseCreateForm, self).__init__(*args, **kwargs)
         self.fields['course_name'].label = "Course Name"
         self.fields['course_image'].label = "Image"
         self.fields['teacher_name'].label = "Teacher Name"
+        self.fields['course_code'].label = "Course Code"
         self.fields['teacher_details'].label = "Teacher Details"
         self.fields['course_description'].label = "Description"
         self.fields['end_date'].label = "End Date"
@@ -32,6 +34,12 @@ class CourseCreateForm(forms.ModelForm):
         self.fields['teacher_name'].widget.attrs.update(
             {
                 'placeholder': 'Teacher Name',
+            }
+        )
+
+        self.fields['course_code'].widget.attrs.update(
+            {
+                'placeholder': 'Course Code',
             }
         )
 
@@ -66,18 +74,25 @@ class CourseCreateForm(forms.ModelForm):
 class AssignmentCreateForm(forms.ModelForm):
     class Meta:
         model = Assignment
-        fields = ['title', 'content', 'marks', 'duration']
+        fields = ['title', 'assignment_course', 'content', 'marks', 'duration']
 
     def __init__(self, *args, **kwargs):
         super(AssignmentCreateForm, self).__init__(*args, **kwargs)
-        self.fields['title'].label = "Assignment Name"
+        self.fields['title'].label = "Assignment Topic"
+        self.fields['assignment_course'].label = "Assignment Course"
         self.fields['content'].label = "Content"
         self.fields['marks'].label = "Marks"
         self.fields['duration'].label = "Duration"
 
         self.fields['title'].widget.attrs.update(
             {
-                'placeholder': 'Enter A Name',
+                'placeholder': 'Enter Assignment Topic',
+            }
+        )
+
+        self.fields['assignment_course'].widget.attrs.update(
+            {
+                'placeholder': 'Enter Assignment Course',
             }
         )
 
@@ -171,12 +186,14 @@ class ExamCreateForm(forms.ModelForm):
 class AssignmentSubmissionForm(forms.ModelForm):
     class Meta:
         model = AssignmentSubmission
-        fields = ['name', 'university_id', 'content', 'file']
+        fields = ['name', 'assignment_course', 'assignment_course_code', 'university_id', 'content', 'file']
 
     def __init__(self, *args, **kwargs):
         super(AssignmentSubmissionForm, self).__init__(*args, **kwargs)
         self.fields['name'].label = " Name"
-        self.fields['university_id'].label = "University Id"
+        self.fields['assignment_course'].label = "Course Assignment"
+        self.fields['assignment_course_code'].label = "Course Code for Assignment"
+        self.fields['university_id'].label = "Matric Number"
         self.fields['content'].label = "Answer"
         self.fields['file'].label = "Or Upload File"
 
@@ -186,9 +203,22 @@ class AssignmentSubmissionForm(forms.ModelForm):
             }
         )
 
+        self.fields['assignment_course'].widget.attrs.update(
+            {
+                'placeholder': 'Assignment for which course?',
+            }
+        )
+
+        self.fields['assignment_course_code'].widget.attrs.update(
+            {
+                'placeholder': 'Course Code for Assignment?'
+            }
+        )
+
+
         self.fields['university_id'].widget.attrs.update(
             {
-                'placeholder': 'Write Your Id',
+                'placeholder': 'Write Your Matric number',
             }
         )
 
@@ -222,12 +252,14 @@ class AssignmentSubmissionForm(forms.ModelForm):
 class ExamSubmissionForm(forms.ModelForm):
     class Meta:
         model = ExamSubmission
-        fields = ['name', 'university_id', 'content', 'file']
+        fields = ['name', 'exam_course',  'exam_course_code', 'university_id', 'content', 'file']
 
     def __init__(self, *args, **kwargs):
         super(ExamSubmissionForm, self).__init__(*args, **kwargs)
         self.fields['name'].label = " Name"
-        self.fields['university_id'].label = "University Id"
+        self.fields['exam_course'].label = "Exam Course Name"
+        self.fields['exam_course_code'].label = "Exam Course Code"
+        self.fields['university_id'].label = "Matric Number"
         self.fields['content'].label = "Answer"
         self.fields['file'].label = "Or Upload File"
 
@@ -237,9 +269,21 @@ class ExamSubmissionForm(forms.ModelForm):
             }
         )
 
+        self.fields['exam_course'].widget.attrs.update(
+            {
+                'placeholder': 'Write Your Exam Course Name',
+            }
+        )
+
+        self.fields['exam_course_code'].widget.attrs.update(
+            {
+                'placeholder': 'Write Your Exam Course Code',
+            }
+        )
+
         self.fields['university_id'].widget.attrs.update(
             {
-                'placeholder': 'Write Your Id',
+                'placeholder': 'Write Your Matric Number',
             }
         )
 

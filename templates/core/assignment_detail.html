@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Course Assignment{% endblock %}
+
+
+{% block content %}
+
+  <div class="container">
+    <div class="col-12 col-sm-6 col-md-10">
+       <h3><strong>{{ object.title }} - {{ object.assignment_course.course_code}} </strong></h3>
+       <small>By {{ object.assignment_course.teacher_name}}</small>
+        <br/>
+      
+        <hr/>
+        <h4>Content: </h4>
+        <p>{{ object.content }}</p>
+          <br/>
+        <h4>Marks: </h4><p>{{ object.marks }}</p>
+          <br/>
+        <h4>Assignment Duration: </h4><p>{{ object.duration }}</p>
+          <br/>
+        <h4>Assignment Date: </h4><p>{{ object.created_at }} </p>
+          <br/>
+      {% if request.user.is_authenticated and request.user.role == 'student' %}
+       <h4><a href="{% url 'core:assignment-submission' %}">Submit Assignment</a></h4>
+      {% endif %}
+    </div>
+  </div>
+
+{% endblock %}

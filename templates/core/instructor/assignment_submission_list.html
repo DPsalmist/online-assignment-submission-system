@@ -6,35 +6,34 @@
 {% block content %}
 
     <div class="container">
-
+        {% if assignment_submission %}
         <div class="col-12 col-sm-6 col-md-10">
-                    <strong><h3>Assignments</h3></strong>
-        <hr/>
+            <strong><h3>All Assignments Submissions</h3></strong>
+            <hr/>
             {% for foo in assignment_submission %}
-
-
-                <p> <h4>Name</h4> {{ foo.name }} </p>
-
-                <p> <h4>Id</h4> {{ foo.university_id }} </p>
-                <hr/>
-                <p> <h4>Answer</h4> {{ foo.content }}  </p>
-
+                <p> <h4>Student Name</h4> {{ foo.name }} </p>
+                <p> <h4>Course</h4> {{ foo.assignment_course }} </p>
+                <p> <h4>Course Code</h4> {{ foo.assignment_course_code.course_code }} </p>
+                <p> <h4>Student Matric: </h4> {{ foo.university_id }} </p>
+                <p> <h4>Question: </h4> {{ foo.assignment_course.content }} </p>
+                <p> <h4>Answer: </h4> {{ foo.content }}  </p>
                 <br/>
                 <a href="{% url 'core:assignment-submission-delete' foo.id %}">Delete Assignment</a>
+                {% if current_user == object.user %}
+                    <div>
+                        <a class="btn btn-info btn-sm mt-1 mb-1" href="{% url 'core:assignment-submission-update' foo.id %}">Mark Assignment</a>
+                        <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'core:assignment-submission-delete' foo.id %}">Delete Assignment</a>
+                    </div>
+                {% endif %}
                   <hr/>
             {% endfor %}
 
-
-
-
             <br/>
-
-
-            <br/>
-
-
         </div>
-
+        {% else %}
+            <h4>Oops! No assignent has been submitted yet! <br> <br> Check back later.</h4>
+            
+        {% endif %}
     </div>
 
 {% endblock %}

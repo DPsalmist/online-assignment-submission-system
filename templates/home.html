@@ -19,7 +19,7 @@
 <div class="col-12">
               <!-- Welcome Text -->
               <div class="welcome-text text-center">
-                <h2 data-animation="fadeInUp" data-delay="100ms"></h2>
+                <h2 data-animation="fadeInUp" data-delay="50ms"></h2>
 
               </div>
 
@@ -82,8 +82,10 @@
               </div>
               <!-- Dentist Info -->
               <div class="dentist-info bg-gradient-overlay">
-                <h5>{{ course.course_name }} |  <a href="{% url 'core:course-view' course.id %}"> <small>VIEW COURSE</small></a> </h5>
-                <p>{{ course.teacher_name }} </p>
+                <h5>
+                  {{ course.course_name }} | <a href="{% url 'core:course-view' course.course_code %}"> <small>VIEW COURSE</small></a>
+                </h5>
+                <p>By {{ course.teacher_name }}</p>
 
 
               </div>

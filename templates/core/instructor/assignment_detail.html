@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Course Assignment{% endblock %}
+
+
+{% block content %}
+
+    <div class="container">
+
+    <div class="col-12 col-sm-6 col-md-10">
+
+
+             <h3><strong>{{ course_assignment }}  </strong></h3>
+              <br/>
+            <img  style=" height: 300px; width: 900px  " src="{{ course_assignment.course_image.url }}" alt="">
+
+
+                         <hr/>
+                  <h4> <strong>Instructor: </strong> {{ course_assignment.teacher_name }} </h4>
+                           <br/>
+                  <p> <h4>About Instructor </h4>{{ course_assignmnet.teacher_details }} </p>
+                          <br/>
+                  <p> <h4>About Course - <span class="text-muted">{{ course_assignmnet.course_code }}</span></h4>{{ course_assignment.course_description }} </p>
+                
+                           <br/>
+                  <p>  <h4>Course Duration </h4>{{ course.created_at }} - {{ course.end_date }} </p>
+
+
+
+
+         </div>
+
+    </div>
+
+{% endblock %}

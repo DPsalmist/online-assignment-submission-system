@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import TemplateView, CreateView, ListView, DeleteView
+from django.views.generic import TemplateView, CreateView, ListView, DeleteView, DetailView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -9,6 +10,7 @@ from .forms import CourseCreateForm, AssignmentCreateForm, ExamCreateForm, Assig
 from .models import Course, Assignment, Exam, ExamSubmission, AssignmentSubmission
 
 
+# Home View
 class HomeView(ListView):
     paginate_by = 6
     template_name = 'home.html'
@@ -18,10 +20,13 @@ class HomeView(ListView):
     def get_queryset(self):
         return self.model.objects.all()
 
+    def get_context_data(self, **kwargs):
+        context = super(HomeView, self).get_context_data(**kwargs)
+        context['assignment_notification'] = Assignment.objects.filter(status='Incomplete').count()
+        return context
 
-class ExamView(TemplateView):
-    template_name = 'core/exams.html'
 
+''' ALL COURSES VIEW '''
 
 # COURSE CREATE VIEW
 class CourseCreateView(CreateView):
@@ -52,8 +57,7 @@ class CourseCreateView(CreateView):
         else:
             return self.form_invalid(form)
 
-
-# VIEW FOR COURSE LIST
+# COURSE LIST VIEW
 class CourseView(ListView):
     model = Course
     template_name = 'core/instructor/courses.html'
@@ -65,13 +69,28 @@ class CourseView(ListView):
         return super().dispatch(self.request, *args, **kwargs)
 
     def get_queryset(self):
-        return self.model.objects.all().order_by('-id')  # filter(user_id=self.request.user.id).order_by('-id')
+        return self.model.objects.all().order_by('id')  # filter(user_id=self.request.user.id).order_by('-id')
+
+    def get_context_data(self, **kwargs):
+        context = super(CourseView, self).get_context_data(**kwargs)
+        context['assignment_notification'] = Assignment.objects.filter(status='Incomplete').count()
+        return context
+
+# SINGLE COURSE VIEW
+def course_single(request, course_code):
+    course = get_object_or_404(Course, course_code=course_code)
+    current_course_code = course.course_code   
+    this_assignment = Assignment.objects.filter(assignment_course__course_code=current_course_code)
+    assignment_notification = Assignment.objects.filter(status='Incomplete').count()
+    context = {
+        'assignment_notification': assignment_notification,
+        'course': course,
+        'this_assignment': this_assignment,
+    }
+    return render(request, "core/instructor/view_course.html", context)
 
 
-def course_single(request, id):
-    course = get_object_or_404(Course, id=id)
-    return render(request, "core/instructor/view_course.html", {'course': course})
-
+''' ALL ASSIGNMENT VIEWS '''
 
 # ASSIGNMENT CREATE VIEW
 class AssignmentCreateView(CreateView):
@@ -103,7 +122,7 @@ class AssignmentCreateView(CreateView):
             return self.form_invalid(form)
 
 
-# VIEW FOR ASSIGNMENT LIST
+# ASSIGNMENT LIST VIEW
 class AssignmentView(ListView):
     model = Assignment
     template_name = 'core/instructor/assignments.html'
@@ -117,8 +136,50 @@ class AssignmentView(ListView):
     def get_queryset(self):
         return self.model.objects.all()  # filter(user_id=self.request.user.id).order_by('-id')
 
+    def get_context_data(self, **kwargs):
+        context = super(AssignmentView, self).get_context_data(**kwargs)
+        context['assignment_notification'] = Assignment.objects.filter(status='Incomplete').count()
+        return context
 
-# DELETE ASSIGNMENT VIEW
+# ASSIGNMENT UPDATE VIEW
+class AssignmentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = AssignmentSubmission
+    fields = ['user','title','assignment_course', 'content', 'marks',
+                'status', 'duration']
+    
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    #test function to make only an authorised user update an assignment
+    def test_func(self):
+        assignment = self.get_object()
+        if self.request.user == assignment.assignment_course.user:
+            return True
+        return False
+
+
+# COURSE ASSIGNMENT VIEW
+class CourseAssignmentListView(ListView):
+    model =  Assignment
+    template_name = 'core/assignment_detail.html' 
+    context_object_name = 'course_assignment'
+    ordering = ['-created_at'] 
+    paginate_by = 3
+
+    def get_queryset(self):
+        return self.model.objects.all().order_by('id')
+
+# ASSIGNMENT DETAIL VIEW
+class AssignmentDetailView(DetailView):
+    model = Assignment
+
+    def get_context_data(self, **kwargs):
+        context = super(AssignmentDetailView, self).get_context_data(**kwargs)
+        context['assignment_notification'] = Assignment.objects.filter(status='Incomplete').count()
+        return context
+
+# ASSIGNMENT DELETE VIEW
 class AssignmentDeleteView(DeleteView):
     model = Assignment
     success_url = reverse_lazy('core:assignment-list')
@@ -129,7 +190,7 @@ class AssignmentSubmissionView(CreateView):
     template_name = 'core/instructor/assignment_submission.html'
     form_class = AssignmentSubmissionForm
     extra_context = {
-        'title': 'New Exam'
+        'title': 'New Assignment'
     }
     success_url = reverse_lazy('core:home')
 
@@ -153,6 +214,53 @@ class AssignmentSubmissionView(CreateView):
         else:
             return self.form_invalid(form)
 
+# Assignment SUBMISSON LIST VIEW
+class AssignmentSubmissionListView(ListView):
+    model = AssignmentSubmission
+    template_name = 'core/instructor/assignment_submission_list.html'
+    context_object_name = 'assignment_submission'
+
+        # To get the current user
+    def get_object(self):
+        current_user = self.request.user
+        print ('Here it is:', 'assignment_submission', current_user )
+        return current_user
+
+    @method_decorator(login_required(login_url=reverse_lazy('authentication:login')))
+    # @method_decorator(user_is_instructor, user_is_student)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(self.request, *args, **kwargs)
+
+    def get_queryset(self):
+        return self.model.objects.all().order_by('-id')  # filter(user_id=self.request.user.id).order_by('-id')
+
+# ASSIGNMENT SUBMISSION UPDATE VIEW
+class AssignmentSubmissionUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = AssignmentSubmission
+    fields = ['user', 'assignment_course_code','assignment_course', 'content', 'file']
+    
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    #test function to make only an authorised user update an assignment
+    def test_func(self):
+        assignment = self.get_object()
+        if self.request.user == assignment.assignment_course.user:
+            return True
+        return False
+
+# ASSIGNMENT SUBMISSION DELETE VIEW
+class AssignmentSubmissionDelete(DeleteView):
+    model = AssignmentSubmission
+    success_url = reverse_lazy('core:assignment-submission-list')
+
+
+''' ALL EXAM VIEWS '''
+
+# EXAM VIEW
+class ExamView(TemplateView):
+    template_name = 'core/exams.html'
 
 # EXAM CREATE VIEW
 class ExamCreateView(CreateView):
@@ -183,7 +291,6 @@ class ExamCreateView(CreateView):
         else:
             return self.form_invalid(form)
 
-
 # EXAM LIST VIEW
 class ExamListView(ListView):
     model = Exam
@@ -198,12 +305,10 @@ class ExamListView(ListView):
     def get_queryset(self):
         return self.model.objects.all().order_by('-id')  # filter(user_id=self.request.user.id).order_by('-id')
 
-
 # EXAM DELETE VIEW
 class ExamDeleteView(DeleteView):
     model = Exam
     success_url = reverse_lazy('core:exam-list')
-
 
 # EXAM SUBMISSION VIEW
 class ExamSubmissionView(CreateView):
@@ -234,29 +339,7 @@ class ExamSubmissionView(CreateView):
         else:
             return self.form_invalid(form)
 
-
-# VIEW FOR Assignment Submission List
-class AssignmentSubmissionListView(ListView):
-    model = AssignmentSubmission
-    template_name = 'core/instructor/assignment_submission_list.html'
-    context_object_name = 'assignment_submission'
-
-    @method_decorator(login_required(login_url=reverse_lazy('authentication:login')))
-    # @method_decorator(user_is_instructor, user_is_student)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(self.request, *args, **kwargs)
-
-    def get_queryset(self):
-        return self.model.objects.all().order_by('-id')  # filter(user_id=self.request.user.id).order_by('-id')
-
-
-# EXAM DELETE VIEW
-class AssignmentSubmissionDelete(DeleteView):
-    model = AssignmentSubmission
-    success_url = reverse_lazy('core:assignment-submission-list')
-
-
-# VIEW FOR Assignment Submission List
+#  EXAM SUBMISSION LIST VIEW
 class ExamSubmissionListView(ListView):
     model = ExamSubmission
     template_name = 'core/instructor/exam_submission_list.html'
@@ -270,7 +353,7 @@ class ExamSubmissionListView(ListView):
     def get_queryset(self):
         return self.model.objects.all().order_by('-id')  # filter(user_id=self.request.user.id).order_by('-id')
 
-
+# EXAM DELETE VIEW
 class ExamSubmissionDelete(DeleteView):
     model = ExamSubmission
     success_url = reverse_lazy('core:exam-submission-list')

@@ -10,45 +10,45 @@
         <div class="col-12 col-sm-6 col-md-10">
             {% if request.user.is_authenticated and request.user.role == 'instructor' %}
                 {% for foo in assignment %}
-                    <h3><strong> {{ foo.title }}  </strong></h3>
+                    <h3><strong> {{ foo.course_name }}  </strong></h3>
                     <hr/>
-                    <p> <h4>Content</h4> {{ foo.content }} </p>
+                    <p> <h4>Assignment Title: </h4> {{ foo.title }}: {{ foo.assignment_course.teacher_name }} </p>
+                    <br>
+                    <p> <h4>Content:</h4> {{ foo.content }} </p>
                     <br/>
-                    <p> <h4>Marks</h4> {{ foo.marks }} </p>
-
-                    <p> <h4>Time</h4> {{ foo.duration }} hours </p>
+                    <p> <h4>Marks:</h4> {{ foo.marks }} </p>
+                    <br>
+                    <p> <h4>Time:</h4> {{ foo.duration }} hours </p>
 
                     <a href="{% url 'core:delete-assignment' foo.id %}">Delete Assignment</a>
-
                 {% endfor %}
                 <hr/>
+                <h4><a href="{% url 'core:assignment-create' %}">Create an assignment</a></h4>
+             {% endif %}
+        </div>
 
+        <div class="col-12 col-sm-6 col-md-10">
 
-                <h4><a href="{% url 'core:assignment-create' %}">Create a Assignment</a></h4>
-
-
-            {% else %}
-
-
+            {% if request.user.is_authenticated and request.user.role == 'student' %}
                 {% for foo in assignment %}
-                    <h3><strong> {{ foo.title }}  </strong></h3>
+                    <h3><strong> {{ foo.title }}  </strong>: {{ foo.assignment_course.teacher_name }} </h3>
                     <hr/>
                     <p> <h4>Content</h4> {{ foo.content }} </p>
                     <br/>
                     <p> <h4>Marks</h4> {{ foo.marks }} </p>
-
+                    <br>
                     <p> <h4>Time</h4> {{ foo.duration }} hours </p>
-                          <br/>
-                      <h4><a href="{% url 'core:assignment-submission' %}">Submit Assignment</a></h4>
-                  <hr/>
+                    <br/>
+                    <h4><a href="{% url 'core:assignment-submission' %}">Submit Assignment</a></h4>
+                    <hr/>
+                {% empty %}
+                    <h4>Oops! No assignment for this course yet. <br><br> Check back later.</h4>
+                    <hr/>
                 {% endfor %}
-                <hr/>
-
-
             {% endif %}
             <br/>
         </div>
-
+        
     </div>
 
 {% endblock %}
