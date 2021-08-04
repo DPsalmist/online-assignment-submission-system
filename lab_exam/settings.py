@@ -26,7 +26,7 @@ SECRET_KEY = 'kgq0$&^r81ozku4cv9fn@^)yb826##_sia&h5kwg)t0p%u#1#o'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['naza-oass.herokuapp.com']
 
 
 # Application definition
@@ -124,6 +124,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+<<<<<<< HEAD
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # STATIC_URL = '/static/'
 
@@ -133,12 +134,23 @@ USE_TZ = True
 
 # Configure Django App for Heroku.
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+=======
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
+
+STATICFILES_DIR = ( 
+    os.path.join(BASE_DIR, 'static')
+)
+>>>>>>> ea1e797856903c26c62c2629f45fcd70b970f987
 
 
+# Configure Django App for Heroku.
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+<<<<<<< HEAD
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = (
@@ -146,5 +158,7 @@ STATICFILES_DIRS = (
 )
 
 
+=======
+>>>>>>> ea1e797856903c26c62c2629f45fcd70b970f987
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
