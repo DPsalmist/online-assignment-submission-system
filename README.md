@@ -11,3 +11,4 @@
 5. Intall dependencies by running: pip install -r requirements.txt
 6. cd back to where manage.py is
 7. Run dev server by running: run manage.py runserver
+8. Visit http://localhost:8000/ on your browser to see app.
